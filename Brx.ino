@@ -16,8 +16,9 @@ IRrecv irrecv(recvPin);
 #define TEAM_YELLOW         2
 #define TEAM_GREEN          3
 
-#define BITMASK_TAGS        0x78000
-#define BITMASK_PLAYERID    0x7E000
+#define BITMASK_TAGTYPE     0x1E00000
+#define BITMASK_PLAYERID    0x1F8000
+#define BITMASK_TEAMID      0x6000
 #define BITMASK_DAMAGE      0x1FE0
 #define BITMASK_UNKNOWN     0x1C
 #define BITMASK_PARITY      0x3
@@ -66,17 +67,17 @@ void loop() {
 //
 void decodeBrx(unsigned long data32bit)
 {
-    parity      = data32bit & B00000011;
-    unknown     = data32bit & B00011100;
-    tagDamage   = data32bit & 0x1FE0;
-    teamID      = data32bit & 0x6000;
-    playerID    = data32bit & 0x1F8000;
-    tagType     = data32bit & 0x1e00000;
-    Serial.print("Team ID    = "); Serial.println(teamID);
-    Serial.print("Player ID  = "); Serial.println(playerID);
-    Serial.print("TagT ype   = "); Serial.println(tagType);
-    Serial.print("Tag Damage = "); Serial.println(tagDamage);
-    Serial.print("Unknown    = "); Serial.println(unknown);
-    Serial.print("Parity     = "); Serial.println(parity);
+    parity      = (data32bit & BITMASK_PARITY);
+    unknown     = (data32bit & BITMASK_UNKNOWN)   >> 2;
+    tagDamage   = (data32bit & BITMASK_DAMAGE)    >> 5;
+    teamID      = (data32bit & BITMASK_TEAMID)    >> 13;
+    playerID    = (data32bit & BITMASK_PLAYERID)  >> 15;
+    tagType     = (data32bit & BITMASK_TAGTYPE)   >> 21;
+    Serial.print("Team ID    =  "); Serial.println(teamID);
+    Serial.print("Player ID  =  "); Serial.println(playerID);
+    Serial.print("TagType    =  "); Serial.println(tagType);
+    Serial.print("Tag Damage =  "); Serial.println(tagDamage);
+    Serial.print("Unknown    =  "); Serial.println(unknown);
+    Serial.print("Parity     =  "); Serial.println(parity);
     Serial.println("");
 }
