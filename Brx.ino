@@ -85,6 +85,7 @@ void decodeBrx(unsigned long data32bit)
 
     sendBrx();
     //sendBrx(teamID, playerID, tagType, tagDamage, unknown);
+    irrecv.resume();
 }
 
 
